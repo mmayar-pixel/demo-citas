@@ -44,3 +44,23 @@ test('fecha pasada se rechaza sin consultar PostgreSQL', async () => {
   }), { codigo: 'FECHA_PASADA' });
   assert.equal(x.guardadas(), 0);
 });
+
+
+test('rechaza un repositorio que no cumple el contrato', () => {
+  assert.throws(
+    () => crearCitaService({
+      citaRepository: {
+        listarTodas: async () => [],
+        existeEnHorario: async () => false
+        // Falta el método guardar()
+      },
+      profesionalRepository: {
+        listarTodos: async () => []
+      }
+    }),
+    {
+      name: 'TypeError',
+      message: 'citaRepository debe implementar guardar()'
+    }
+  );
+});
